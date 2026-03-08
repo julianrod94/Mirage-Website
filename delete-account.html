@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy - Mirage</title>
+<title>Delete Account - Mirage</title>
 <style>
   @font-face {
     font-family: 'TinyUnicode';
@@ -187,6 +187,10 @@
     margin-bottom: 10px;
   }
 
+  .policy-section ol {
+    padding-left: 40px;
+  }
+
   .policy-section ul {
     list-style: none;
     padding-left: 20px;
@@ -260,107 +264,50 @@
     <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">MENU</button>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
       <li><a href="delete-account.html">Delete Account</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- PRIVACY POLICY -->
+<!-- DELETE ACCOUNT -->
 <div class="content-wrap">
   <a href="index.html" class="back-link">&lt; Back to Home</a>
   <div class="content-panel game-panel">
-    <h1 class="page-title">Privacy Policy</h1>
+    <h1 class="page-title">Delete Account</h1>
     <p class="last-updated">Last updated: March 8, 2026</p>
 
     <div class="policy-section game-panel-dark">
-      <h2>Introduction</h2>
-      <p>Mirage ("the Game") is an idle survivor incremental game developed by an independent developer. This privacy policy explains what data the Game collects, how it is used, and your rights regarding that data.</p>
+      <h2>How to Delete Your Account</h2>
+      <p>If you would like to delete your Mirage account and all associated data, send an email to the developer contact email listed on the Mirage Google Play Store page. Please include the email address associated with your Google Sign-In so we can locate your account.</p>
+      <p>Your account and all associated data will be deleted and you will receive a confirmation email once the process is complete.</p>
     </div>
 
     <div class="policy-section game-panel-dark">
-      <h2>Data We Collect</h2>
-      <p>When you sign in with Google, we collect:</p>
+      <h2>What Data Is Deleted</h2>
+      <p>When your account is deleted, the following data is permanently removed from our servers:</p>
       <ul>
-        <li>Your Google email address</li>
-        <li>Your Google display name</li>
-        <li>Your platform (Android or Desktop)</li>
-        <li>Your app version</li>
-      </ul>
-      <p>We also store your game save data (inventory, upgrades, progression) when you use the cloud save feature.</p>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>How We Use Your Data</h2>
-      <ul>
-        <li>Authentication: Your Google account info is used solely to identify you and link your cloud save.</li>
-        <li>Cloud Saves: Your game progress is stored on our servers so you can sync across devices.</li>
-        <li>App Integrity: On Android, we may verify app integrity through Google Play Integrity API to detect tampering. This does not collect personal data.</li>
+        <li>Your Google email address and display name</li>
+        <li>Your user ID and authentication tokens</li>
+        <li>Your cloud save data (game progress, inventory, upgrades, and all other saved game state)</li>
+        <li>Your cloud save history (up to 30 days of backup saves)</li>
       </ul>
     </div>
 
     <div class="policy-section game-panel-dark">
-      <h2>Data Storage and Security</h2>
-      <ul>
-        <li>Your data is stored on AWS (Amazon Web Services) servers in the United States.</li>
-        <li>Save data is encrypted at rest using server-side encryption.</li>
-        <li>All data is transmitted over HTTPS (encrypted in transit).</li>
-        <li>Authentication tokens are short-lived (15-minute access tokens) and refresh tokens are stored as hashed values.</li>
-        <li>Save history is retained for 30 days to allow recovery from accidental overwrites.</li>
-      </ul>
+      <h2>What Data Is Kept</h2>
+      <p>No data is retained after account deletion. All data associated with your account is permanently deleted.</p>
+      <p>Your local save file on your device is not affected by account deletion. You can continue playing offline, but cloud sync will no longer be available until you sign in again (which creates a new account).</p>
     </div>
 
     <div class="policy-section game-panel-dark">
-      <h2>What We Do NOT Collect</h2>
-      <ul>
-        <li>We do not collect device hardware identifiers, advertising IDs, or IMEI numbers.</li>
-        <li>We do not use analytics or telemetry SDKs (no Firebase Analytics, Mixpanel, etc.).</li>
-        <li>We do not use crash reporting services.</li>
-        <li>We do not display ads or use ad network SDKs.</li>
-        <li>We do not sell, share, or provide your data to third parties.</li>
-      </ul>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>Third-Party Services</h2>
-      <ul>
-        <li>Google Sign-In: Used for authentication. Subject to <a href="https://policies.google.com/privacy" style="color:#dfdfdf;">Google's Privacy Policy</a>.</li>
-        <li>Google Play Integrity API (Android only): Used to verify app authenticity. No personal data is collected through this service.</li>
-        <li>Amazon Web Services (AWS): Used to host our backend servers and store cloud save data.</li>
-      </ul>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>Local Data</h2>
-      <p>The Game stores data locally on your device:</p>
-      <ul>
-        <li>Game save file (your progress, inventory, and settings)</li>
-        <li>Authentication credentials for cloud save sync</li>
-      </ul>
-      <p>This data stays on your device and is not transmitted unless you use the cloud save feature.</p>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>Children's Privacy</h2>
-      <p>The Game is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected data from a child under 13, please contact us so we can delete it.</p>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>Your Rights</h2>
-      <ul>
-        <li>You can play the Game without signing in, in which case no personal data is collected.</li>
-        <li>You can request deletion of your account and all associated data by contacting us.</li>
-        <li>You can stop using cloud saves at any time; your local save will continue to work independently.</li>
-      </ul>
-    </div>
-
-    <div class="policy-section game-panel-dark">
-      <h2>Changes to This Policy</h2>
-      <p>We may update this privacy policy from time to time. Changes will be reflected on this page with an updated "Last updated" date.</p>
+      <h2>Deletion Timeline</h2>
+      <p>Account deletion is processed immediately upon confirmation. All associated data is removed from our servers right away.</p>
     </div>
 
     <div class="policy-section game-panel-dark">
       <h2>Contact</h2>
-      <p>If you have questions about this privacy policy or want to request data deletion, please contact us by opening an issue on our GitHub repository or reaching out through the Google Play Store listing.</p>
+      <p>If you have trouble deleting your account or have questions, please contact us through the Google Play Store listing for Mirage.</p>
     </div>
   </div>
 </div>
