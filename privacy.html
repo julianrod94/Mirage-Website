@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - Mirage</title>
+<style>
+  @font-face {
+    font-family: 'TinyUnicode';
+    src: url('assets/fonts/TinyUnicode.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'TinyUnicode', monospace;
+    color: #dfdfdf;
+    font-size: 39px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-color: #4a8b3f;
+    background-image: url('assets/trees.png');
+    background-repeat: repeat;
+    background-size: 64px 64px;
+    image-rendering: pixelated;
+  }
+
+  img.pixel {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .game-panel {
+    border: 0;
+    border-image-source: url('assets/panel-brown.png');
+    border-image-slice: 10 fill;
+    border-image-width: 16px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  .game-panel-dark {
+    border: 0;
+    border-image-source: url('assets/panel-dark.png');
+    border-image-slice: 10 fill;
+    border-image-width: 16px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0;
+  }
+
+  nav .nav-inner {
+    max-width: 1200px;
+    margin: 4px auto;
+    padding: 4px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav .nav-logo {
+    font-size: 67px;
+    color: #dfdfdf;
+    text-shadow:
+      -1px -1px 0 #3f2631, 0px -1px 0 #3f2631, 1px -1px 0 #3f2631,
+      -1px  0px 0 #3f2631,                       1px  0px 0 #3f2631,
+      -1px  1px 0 #3f2631, 0px  1px 0 #3f2631, 1px  1px 0 #3f2631,
+      -2px -2px 0 #3f2631, 0px -2px 0 #3f2631, 2px -2px 0 #3f2631,
+      -2px  0px 0 #3f2631,                       2px  0px 0 #3f2631,
+      -2px  2px 0 #3f2631, 0px  2px 0 #3f2631, 2px  2px 0 #3f2631,
+      -3px -3px 0 #3f2631, 0px -3px 0 #3f2631, 3px -3px 0 #3f2631,
+      -3px  0px 0 #3f2631,                       3px  0px 0 #3f2631,
+      -3px  3px 0 #3f2631, 0px  3px 0 #3f2631, 3px  3px 0 #3f2631,
+      -4px -4px 0 #3f2631, 0px -4px 0 #3f2631, 4px -4px 0 #3f2631,
+      -4px  0px 0 #3f2631,                       4px  0px 0 #3f2631,
+      -4px  4px 0 #3f2631, 0px  4px 0 #3f2631, 4px  4px 0 #3f2631,
+      -4px -2px 0 #3f2631, -4px 2px 0 #3f2631,
+       4px -2px 0 #3f2631,  4px 2px 0 #3f2631,
+      -2px -4px 0 #3f2631,  2px -4px 0 #3f2631,
+      -2px  4px 0 #3f2631,  2px  4px 0 #3f2631;
+    letter-spacing: 3px;
+  }
+
+  nav .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    color: #dfdfdf;
+    text-decoration: none;
+    font-size: 39px;
+    transition: color 0.2s;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  nav .nav-links a:hover {
+    color: #fff;
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #dfdfdf;
+    font-size: 45px;
+    cursor: pointer;
+    font-family: 'TinyUnicode', monospace;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  /* ===== CONTENT ===== */
+  .content-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 120px 24px 60px;
+  }
+
+  .content-panel {
+    padding: 48px 40px;
+  }
+
+  .page-title {
+    font-size: 90px;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #dfdfdf;
+    text-shadow:
+      -2px -2px 0 #3f2631, 0px -2px 0 #3f2631, 2px -2px 0 #3f2631,
+      -2px  0px 0 #3f2631,                       2px  0px 0 #3f2631,
+      -2px  2px 0 #3f2631, 0px  2px 0 #3f2631, 2px  2px 0 #3f2631,
+      -4px -4px 0 #3f2631, 0px -4px 0 #3f2631, 4px -4px 0 #3f2631,
+      -4px  0px 0 #3f2631,                       4px  0px 0 #3f2631,
+      -4px  4px 0 #3f2631, 0px  4px 0 #3f2631, 4px  4px 0 #3f2631,
+      -4px -2px 0 #3f2631, -4px 2px 0 #3f2631,
+       4px -2px 0 #3f2631,  4px 2px 0 #3f2631,
+      -2px -4px 0 #3f2631,  2px -4px 0 #3f2631,
+      -2px  4px 0 #3f2631,  2px  4px 0 #3f2631;
+    letter-spacing: 4px;
+  }
+
+  .last-updated {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 34px;
+    margin-bottom: 40px;
+  }
+
+  .policy-section {
+    margin-bottom: 32px;
+    padding: 24px 20px;
+  }
+
+  .policy-section h2 {
+    font-size: 50px;
+    color: #dfdfdf;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 0 #3f2631;
+    letter-spacing: 1px;
+  }
+
+  .policy-section p,
+  .policy-section li {
+    color: #c8c8c8;
+    font-size: 34px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .policy-section ul {
+    list-style: none;
+    padding-left: 20px;
+  }
+
+  .policy-section ul li::before {
+    content: "- ";
+  }
+
+  a.back-link {
+    display: inline-block;
+    color: #dfdfdf;
+    text-decoration: none;
+    font-size: 39px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 0 #3f2631;
+    transition: color 0.2s;
+  }
+
+  a.back-link:hover {
+    color: #fff;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 31px;
+  }
+
+  footer .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 28px;
+    color: #b0b0b0;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    body { font-size: 34px; }
+    .page-title { font-size: 67px; }
+    .content-panel { padding: 32px 20px; }
+    .policy-section h2 { font-size: 39px; }
+    .policy-section p, .policy-section li { font-size: 31px; }
+
+    nav .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 8px;
+      right: 8px;
+      flex-direction: column;
+      padding: 20px 24px;
+      gap: 16px;
+    }
+
+    nav .nav-links.open {
+      display: flex;
+    }
+
+    .hamburger { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner game-panel">
+    <a href="index.html" class="nav-logo" style="text-decoration:none;color:inherit;">Mirage</a>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">MENU</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PRIVACY POLICY -->
+<div class="content-wrap">
+  <a href="index.html" class="back-link">&lt; Back to Home</a>
+  <div class="content-panel game-panel">
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="last-updated">Last updated: March 8, 2026</p>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Introduction</h2>
+      <p>Mirage ("the Game") is an idle survivor incremental game developed by an independent developer. This privacy policy explains what data the Game collects, how it is used, and your rights regarding that data.</p>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Data We Collect</h2>
+      <p>When you sign in with Google, we collect:</p>
+      <ul>
+        <li>Your Google email address</li>
+        <li>Your Google display name</li>
+        <li>Your platform (Android or Desktop)</li>
+        <li>Your app version</li>
+      </ul>
+      <p>We also store your game save data (inventory, upgrades, progression) when you use the cloud save feature.</p>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>How We Use Your Data</h2>
+      <ul>
+        <li>Authentication: Your Google account info is used solely to identify you and link your cloud save.</li>
+        <li>Cloud Saves: Your game progress is stored on our servers so you can sync across devices.</li>
+        <li>App Integrity: On Android, we may verify app integrity through Google Play Integrity API to detect tampering. This does not collect personal data.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Data Storage and Security</h2>
+      <ul>
+        <li>Your data is stored on AWS (Amazon Web Services) servers in the United States.</li>
+        <li>Save data is encrypted at rest using server-side encryption.</li>
+        <li>All data is transmitted over HTTPS (encrypted in transit).</li>
+        <li>Authentication tokens are short-lived (15-minute access tokens) and refresh tokens are stored as hashed values.</li>
+        <li>Save history is retained for 30 days to allow recovery from accidental overwrites.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>What We Do NOT Collect</h2>
+      <ul>
+        <li>We do not collect device hardware identifiers, advertising IDs, or IMEI numbers.</li>
+        <li>We do not use analytics or telemetry SDKs (no Firebase Analytics, Mixpanel, etc.).</li>
+        <li>We do not use crash reporting services.</li>
+        <li>We do not display ads or use ad network SDKs.</li>
+        <li>We do not sell, share, or provide your data to third parties.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Third-Party Services</h2>
+      <ul>
+        <li>Google Sign-In: Used for authentication. Subject to <a href="https://policies.google.com/privacy" style="color:#dfdfdf;">Google's Privacy Policy</a>.</li>
+        <li>Google Play Integrity API (Android only): Used to verify app authenticity. No personal data is collected through this service.</li>
+        <li>Amazon Web Services (AWS): Used to host our backend servers and store cloud save data.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Local Data</h2>
+      <p>The Game stores data locally on your device:</p>
+      <ul>
+        <li>Game save file (your progress, inventory, and settings)</li>
+        <li>Authentication credentials for cloud save sync</li>
+      </ul>
+      <p>This data stays on your device and is not transmitted unless you use the cloud save feature.</p>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Children's Privacy</h2>
+      <p>The Game is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected data from a child under 13, please contact us so we can delete it.</p>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Your Rights</h2>
+      <ul>
+        <li>You can play the Game without signing in, in which case no personal data is collected.</li>
+        <li>You can request deletion of your account and all associated data by contacting us.</li>
+        <li>You can stop using cloud saves at any time; your local save will continue to work independently.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Changes to This Policy</h2>
+      <p>We may update this privacy policy from time to time. Changes will be reflected on this page with an updated "Last updated" date.</p>
+    </div>
+
+    <div class="policy-section game-panel-dark">
+      <h2>Contact</h2>
+      <p>If you have questions about this privacy policy or want to request data deletion, please contact us by opening an issue on our GitHub repository or reaching out through the Google Play Store listing.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner game-panel">
+    Mirage - An idle survivor incremental game
+  </div>
+</footer>
+
+<script>
+  function closeNav() {
+    document.querySelector('.nav-links').classList.remove('open');
+  }
+</script>
+
+</body>
+</html>

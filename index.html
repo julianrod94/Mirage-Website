@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirage - Idle Survivor Incremental Game</title>
+<style>
+  @font-face {
+    font-family: 'TinyUnicode';
+    src: url('assets/fonts/TinyUnicode.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'TinyUnicode', monospace;
+    color: #dfdfdf;
+    font-size: 39px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-color: #4a8b3f;
+    background-image: url('assets/trees.png');
+    background-repeat: repeat;
+    background-size: 64px 64px;
+    image-rendering: pixelated;
+  }
+
+  img.pixel {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* ===== GAME UI PANEL (9-slice via border-image) ===== */
+  .game-panel {
+    border: 0;
+    border-image-source: url('assets/panel-brown.png');
+    border-image-slice: 10 fill;
+    border-image-width: 16px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  .game-panel-dark {
+    border: 0;
+    border-image-source: url('assets/panel-dark.png');
+    border-image-slice: 10 fill;
+    border-image-width: 16px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  .game-panel-white {
+    border: 0;
+    border-image-source: url('assets/panel-white.png');
+    border-image-slice: 12 fill;
+    border-image-width: 18px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0;
+  }
+
+  nav .nav-inner {
+    max-width: 1200px;
+    margin: 4px auto;
+    padding: 4px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav .nav-logo {
+    font-size: 67px;
+    color: #dfdfdf;
+    text-shadow:
+      -1px -1px 0 #3f2631, 0px -1px 0 #3f2631, 1px -1px 0 #3f2631,
+      -1px  0px 0 #3f2631,                       1px  0px 0 #3f2631,
+      -1px  1px 0 #3f2631, 0px  1px 0 #3f2631, 1px  1px 0 #3f2631,
+      -2px -2px 0 #3f2631, 0px -2px 0 #3f2631, 2px -2px 0 #3f2631,
+      -2px  0px 0 #3f2631,                       2px  0px 0 #3f2631,
+      -2px  2px 0 #3f2631, 0px  2px 0 #3f2631, 2px  2px 0 #3f2631,
+      -3px -3px 0 #3f2631, 0px -3px 0 #3f2631, 3px -3px 0 #3f2631,
+      -3px  0px 0 #3f2631,                       3px  0px 0 #3f2631,
+      -3px  3px 0 #3f2631, 0px  3px 0 #3f2631, 3px  3px 0 #3f2631,
+      -4px -4px 0 #3f2631, 0px -4px 0 #3f2631, 4px -4px 0 #3f2631,
+      -4px  0px 0 #3f2631,                       4px  0px 0 #3f2631,
+      -4px  4px 0 #3f2631, 0px  4px 0 #3f2631, 4px  4px 0 #3f2631,
+      -4px -2px 0 #3f2631, -4px 2px 0 #3f2631,
+       4px -2px 0 #3f2631,  4px 2px 0 #3f2631,
+      -2px -4px 0 #3f2631,  2px -4px 0 #3f2631,
+      -2px  4px 0 #3f2631,  2px  4px 0 #3f2631;
+    letter-spacing: 3px;
+  }
+
+  nav .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    color: #dfdfdf;
+    text-decoration: none;
+    font-size: 39px;
+    transition: color 0.2s;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  nav .nav-links a:hover {
+    color: #fff;
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #dfdfdf;
+    font-size: 45px;
+    cursor: pointer;
+    font-family: 'TinyUnicode', monospace;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 160px 24px 80px;
+    position: relative;
+  }
+
+  .hero::before {
+    display: none;
+  }
+
+  .hero-panel {
+    position: relative;
+    z-index: 1;
+    padding: 48px 64px;
+    max-width: 700px;
+  }
+
+  .hero-characters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .hero-character {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .hero-character:nth-child(1) { animation-delay: 0s; }
+  .hero-character:nth-child(2) { animation-delay: 0.5s; }
+  .hero-character:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .hero-title {
+    font-size: 179px;
+    color: #dfdfdf;
+    text-shadow:
+      -2px -2px 0 #3f2631, 0px -2px 0 #3f2631, 2px -2px 0 #3f2631,
+      -2px  0px 0 #3f2631,                       2px  0px 0 #3f2631,
+      -2px  2px 0 #3f2631, 0px  2px 0 #3f2631, 2px  2px 0 #3f2631,
+      -4px -4px 0 #3f2631, 0px -4px 0 #3f2631, 4px -4px 0 #3f2631,
+      -4px  0px 0 #3f2631,                       4px  0px 0 #3f2631,
+      -4px  4px 0 #3f2631, 0px  4px 0 #3f2631, 4px  4px 0 #3f2631,
+      -6px -6px 0 #3f2631, 0px -6px 0 #3f2631, 6px -6px 0 #3f2631,
+      -6px  0px 0 #3f2631,                       6px  0px 0 #3f2631,
+      -6px  6px 0 #3f2631, 0px  6px 0 #3f2631, 6px  6px 0 #3f2631,
+      -8px -8px 0 #3f2631, 0px -8px 0 #3f2631, 8px -8px 0 #3f2631,
+      -8px  0px 0 #3f2631,                       8px  0px 0 #3f2631,
+      -8px  8px 0 #3f2631, 0px  8px 0 #3f2631, 8px  8px 0 #3f2631,
+      -8px -4px 0 #3f2631, -8px 4px 0 #3f2631,
+       8px -4px 0 #3f2631,  8px 4px 0 #3f2631,
+      -4px -8px 0 #3f2631,  4px -8px 0 #3f2631,
+      -4px  8px 0 #3f2631,  4px  8px 0 #3f2631;
+    letter-spacing: 8px;
+    margin-bottom: 12px;
+  }
+
+  .hero-tagline {
+    font-size: 45px;
+    color: #c0c0c0;
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 48px;
+    font-family: 'TinyUnicode', monospace;
+    font-size: 42px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #dfdfdf;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  .btn-primary {
+    border: 0;
+    border-image-source: url('assets/panel-white.png');
+    border-image-slice: 12 fill;
+    border-image-width: 14px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+    color: #3f2631;
+    text-shadow: none;
+  }
+
+  .btn-primary:hover {
+    color: #2a1a20;
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
+  .btn-disabled {
+    border: 0;
+    border-image-source: url('assets/panel-dark.png');
+    border-image-slice: 10 fill;
+    border-image-width: 14px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+    color: #888;
+    cursor: default;
+  }
+
+  .btn-disabled:hover {
+    transform: none;
+    filter: none;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  .section-panel {
+    padding: 48px 40px;
+  }
+
+  .section-title {
+    font-size: 90px;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #dfdfdf;
+    text-shadow:
+      -2px -2px 0 #3f2631, 0px -2px 0 #3f2631, 2px -2px 0 #3f2631,
+      -2px  0px 0 #3f2631,                       2px  0px 0 #3f2631,
+      -2px  2px 0 #3f2631, 0px  2px 0 #3f2631, 2px  2px 0 #3f2631,
+      -4px -4px 0 #3f2631, 0px -4px 0 #3f2631, 4px -4px 0 #3f2631,
+      -4px  0px 0 #3f2631,                       4px  0px 0 #3f2631,
+      -4px  4px 0 #3f2631, 0px  4px 0 #3f2631, 4px  4px 0 #3f2631,
+      -4px -2px 0 #3f2631, -4px 2px 0 #3f2631,
+       4px -2px 0 #3f2631,  4px 2px 0 #3f2631,
+      -2px -4px 0 #3f2631,  2px -4px 0 #3f2631,
+      -2px  4px 0 #3f2631,  2px  4px 0 #3f2631;
+    letter-spacing: 4px;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 39px;
+    margin-bottom: 40px;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    padding: 24px 20px;
+    transition: transform 0.2s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .feature-card h3 {
+    font-size: 48px;
+    color: #dfdfdf;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  .feature-card p {
+    color: #c8c8c8;
+    font-size: 34px;
+    line-height: 1.7;
+  }
+
+  /* ===== CLASSES ===== */
+  .classes-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .class-card {
+    padding: 32px 28px;
+    text-align: center;
+    width: 320px;
+    transition: transform 0.2s;
+  }
+
+  .class-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .class-card img {
+    display: block;
+    margin: 0 auto 16px;
+  }
+
+  .class-card h3 {
+    font-size: 50px;
+    color: #dfdfdf;
+    margin-bottom: 6px;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  .class-card .class-role {
+    color: #b0b0b0;
+    font-size: 34px;
+    margin-bottom: 12px;
+  }
+
+  .class-card p {
+    font-size: 34px;
+    line-height: 1.7;
+    color: #c8c8c8;
+  }
+
+  /* ===== BESTIARY ===== */
+  .bestiary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .enemy-card {
+    padding: 20px 12px 16px;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative;
+  }
+
+  .enemy-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .enemy-card img {
+    display: block;
+    margin: 0 auto 10px;
+  }
+
+  .enemy-card .enemy-name {
+    font-size: 31px;
+    color: #dfdfdf;
+    letter-spacing: 0.5px;
+  }
+
+  .enemy-card .boss-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 25px;
+    padding: 2px 10px;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #3f2631;
+    border: 0;
+    border-image-source: url('assets/panel-dark.png');
+    border-image-slice: 10 fill;
+    border-image-width: 8px;
+    border-image-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  /* ===== DOWNLOAD ===== */
+  .download-grid {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .download-card {
+    padding: 32px 36px;
+    width: 280px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .download-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .download-card .platform-icon {
+    font-size: 56px;
+    margin-bottom: 8px;
+  }
+
+  .download-card h3 {
+    font-size: 48px;
+    color: #dfdfdf;
+    margin-bottom: 16px;
+    text-shadow: 1px 1px 0 #3f2631;
+  }
+
+  .download-card .btn {
+    display: block;
+    font-size: 36px;
+    padding: 12px 24px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 31px;
+  }
+
+  footer .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 28px;
+    color: #b0b0b0;
+  }
+
+  /* ===== SCROLL ANIMATION ===== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    body { font-size: 34px; }
+
+    .hero-title { font-size: 101px; }
+    .hero-tagline { font-size: 36px; }
+    .hero-panel { padding: 36px 28px; }
+    .hero-characters { gap: 16px; }
+
+    .section-title { font-size: 67px; }
+    .section-subtitle { font-size: 34px; }
+    .section-panel { padding: 32px 20px; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card h3 { font-size: 39px; }
+    .feature-card p { font-size: 31px; }
+
+    .bestiary-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+
+    .class-card { width: 100%; max-width: 360px; }
+
+    nav .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 8px;
+      right: 8px;
+      flex-direction: column;
+      padding: 20px 24px;
+      gap: 16px;
+    }
+
+    nav .nav-links.open {
+      display: flex;
+    }
+
+    .hamburger { display: block; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 78px; letter-spacing: 4px; }
+    .bestiary-grid { grid-template-columns: repeat(3, 1fr); }
+    .download-card { width: 100%; max-width: 280px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner game-panel">
+    <a href="#" class="nav-logo" style="text-decoration:none;color:inherit;">Mirage</a>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">MENU</button>
+    <ul class="nav-links">
+      <li><a href="#features" onclick="closeNav()">Features</a></li>
+      <li><a href="#classes" onclick="closeNav()">Classes</a></li>
+      <li><a href="#bestiary" onclick="closeNav()">Bestiary</a></li>
+      <li><a href="#download" onclick="closeNav()">Download</a></li>
+      <li><a href="privacy.html" onclick="closeNav()">Privacy</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-panel game-panel">
+    <div class="hero-characters">
+      <img src="assets/classes/Knight.png" alt="Knight" width="112" height="112" class="pixel hero-character">
+      <img src="assets/classes/Ranger.png" alt="Ranger" width="112" height="112" class="pixel hero-character">
+      <img src="assets/classes/Miner.png" alt="Miner" width="112" height="112" class="pixel hero-character">
+    </div>
+    <h1 class="hero-title">Mirage</h1>
+    <p class="hero-tagline">An idle survivor incremental game</p>
+    <a href="#download" class="btn btn-primary">Download Now</a>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section-wrap" id="features">
+  <div class="section-panel game-panel">
+    <h2 class="section-title fade-in">Features</h2>
+    <p class="section-subtitle fade-in">Battle, collect, craft, and grow stronger</p>
+    <div class="features-grid">
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Battle Stages</h3>
+        <p>Survive waves of enemies, collect loot, and clear stages to unlock new areas with tougher monsters and better rewards.</p>
+      </div>
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Auto-Replay</h3>
+        <p>Save your best runs and set them to auto-replay. Your battles are simulated live, earning different drops each time.</p>
+      </div>
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Crafting & Forging</h3>
+        <p>Use enemy drops and raw materials to craft useful items at the forge. Discover new recipes as you progress and spend what you craft on upgrades.</p>
+      </div>
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Apothecary & Garden</h3>
+        <p>Tend your garden to grow ingredients like Hearthberries and Hot Peppers. Brew potions for permanent stat boosts that last forever.</p>
+      </div>
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Soul Farm</h3>
+        <p>Collect enemy souls and use them to unlock harvesters that passively generate resources for you over time. Recycle items into soul energy.</p>
+      </div>
+      <div class="feature-card game-panel-dark fade-in">
+        <h3>Upgrades</h3>
+        <p>Spend loot to permanently upgrade your weapons, abilities, buildings, and more. Each class has different upgrades that persist between runs.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLASSES -->
+<div class="section-wrap" id="classes">
+  <div class="section-panel game-panel">
+    <h2 class="section-title fade-in">Player Classes</h2>
+    <p class="section-subtitle fade-in">Three classes, each with unique abilities</p>
+    <div class="classes-row">
+      <div class="class-card game-panel-dark fade-in">
+        <img src="assets/classes/Knight.png" alt="Knight" width="96" height="96" class="pixel">
+        <h3>Knight</h3>
+        <p class="class-role">Tank / Melee</p>
+        <p>Tough and armored. Wields a sword with abilities like Charge, Shield Wall, and Shockwave to control the battlefield.</p>
+      </div>
+      <div class="class-card game-panel-dark fade-in">
+        <img src="assets/classes/Ranger.png" alt="Ranger" width="96" height="96" class="pixel">
+        <h3>Ranger</h3>
+        <p class="class-role">Ranged / Agile</p>
+        <p>Fast and deadly from afar. Fires piercing arrows with Sprint and Barrage abilities for hit-and-run tactics.</p>
+      </div>
+      <div class="class-card game-panel-dark fade-in">
+        <img src="assets/classes/Miner.png" alt="Miner" width="96" height="96" class="pixel">
+        <h3>Miner</h3>
+        <p class="class-role">Passive / Melee</p>
+        <p>Slow and not the strongest, but well armored. Killing enemies spawns ores, letting you gather materials that other classes cannot obtain.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BESTIARY -->
+<div class="section-wrap" id="bestiary">
+  <div class="section-panel game-panel">
+    <h2 class="section-title fade-in">Bestiary</h2>
+    <p class="section-subtitle fade-in"></p>
+    <div class="bestiary-grid">
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Slime.png" alt="Slime" width="80" height="80" class="pixel">
+        <div class="enemy-name">Slime</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Rat.png" alt="Rat" width="80" height="80" class="pixel">
+        <div class="enemy-name">Rat</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Chicken.png" alt="Chicken" width="80" height="80" class="pixel">
+        <div class="enemy-name">Chicken</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/RabidRat.png" alt="Rabid Rat" width="80" height="80" class="pixel">
+        <div class="enemy-name">Rabid Rat</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Spider.png" alt="Spider" width="80" height="80" class="pixel">
+        <div class="enemy-name">Spider</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/BlackWidow.png" alt="Black Widow" width="80" height="80" class="pixel">
+        <div class="enemy-name">Black Widow</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/VenomSpitter.png" alt="Venom Spitter" width="80" height="80" class="pixel">
+        <div class="enemy-name">Venom Spitter</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Ram.png" alt="Ram" width="80" height="80" class="pixel">
+        <div class="enemy-name">Ram</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Bear.png" alt="Bear" width="80" height="80" class="pixel">
+        <div class="enemy-name">Bear</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Goblin.png" alt="Goblin" width="80" height="80" class="pixel">
+        <div class="enemy-name">Goblin</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/GoblinArcher.png" alt="Goblin Archer" width="80" height="80" class="pixel">
+        <div class="enemy-name">Goblin Archer</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/GoblinShaman.png" alt="Goblin Shaman" width="80" height="80" class="pixel">
+        <div class="enemy-name">Goblin Shaman</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/GoblinWarrior.png" alt="Goblin Warrior" width="80" height="80" class="pixel">
+        <div class="enemy-name">Goblin Warrior</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Skeleton.png" alt="Skeleton" width="80" height="80" class="pixel">
+        <div class="enemy-name">Skeleton</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/SkeletonHurler.png" alt="Skeleton Hurler" width="80" height="80" class="pixel">
+        <div class="enemy-name">Skeleton Hurler</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/SkeletonWarrior.png" alt="Skeleton Warrior" width="80" height="80" class="pixel">
+        <div class="enemy-name">Skeleton Warrior</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <img src="assets/enemies/Zombie.png" alt="Zombie" width="80" height="80" class="pixel">
+        <div class="enemy-name">Zombie</div>
+      </div>
+      <div class="enemy-card game-panel-dark fade-in">
+        <span class="boss-badge">BOSS</span>
+        <img src="assets/enemies/SlimeKing.png" alt="Slime King" width="80" height="80" class="pixel">
+        <div class="enemy-name">Slime King</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD -->
+<div class="section-wrap" id="download">
+  <div class="section-panel game-panel">
+    <h2 class="section-title fade-in">Download</h2>
+    <p class="section-subtitle fade-in">Play Mirage today</p>
+    <div class="download-grid">
+      <div class="download-card game-panel fade-in">
+        <h3 style="font-size:67px;">Windows</h3>
+        <a href="#" class="btn btn-primary">Download</a>
+      </div>
+      <div class="download-card game-panel-dark fade-in">
+        <h3 style="font-size:67px;">Android</h3>
+        <span class="btn btn-disabled">Coming Soon</span>
+      </div>
+      <div class="download-card game-panel-dark fade-in">
+        <h3 style="font-size:67px;">iOS</h3>
+        <span class="btn btn-disabled">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner game-panel">
+    Mirage - An idle survivor incremental game | <a href="privacy.html" style="color:#b0b0b0;text-decoration:none;">Privacy Policy</a>
+  </div>
+</footer>
+
+<script>
+  function closeNav() {
+    document.querySelector('.nav-links').classList.remove('open');
+  }
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
